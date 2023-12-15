@@ -8,10 +8,10 @@ const getAll = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-    const { id } = req.params;
-    const result = await contactsService.getContactById(id);
+    const { contactId } = req.params;
+    const result = await contactsService.getContactById(contactId);
     if (!result) {
-        throw HttpError(404, `Contact with id=${id} not faund`)
+        throw HttpError(404, `Contact with id=${contactId} not faund`)
     };
     res.json(result);
 };
@@ -20,10 +20,10 @@ const addNew = async (req, res, next) => {
     try {
         const { error } = contactAddSchema.validate(req.body);
         if(error) {
-            return next(HttpError(400, error.message));
+            throw HttpError(400, error.message);
         }
-        const result = await contactsService.addContact(res.body);
-        req.status(201).json(result);
+        const result = await contactsService.addContact(req.body);
+        res.status(201).json(result);
     }
     catch (error) {
         next(error);
@@ -31,10 +31,10 @@ const addNew = async (req, res, next) => {
 };
 
 const deleteById = async (req, res, next) => {
-    const { id } = req.params;
-    const result = await contactsService.removeContact(id);
+    const { contactId } = req.params;
+    const result = await contactsService.removeContact(contactId);
     if (!result) {
-        throw HttpError(404, `Contact with id=${id} not faund`)
+        throw HttpError(404, `Contact with id=${contactId} not faund`)
     };
     res.json({ message: "Delete success" });
 };
@@ -43,12 +43,12 @@ const updateById = async (req, res, next) => {
     try {
         const { error } = contactUpdateSchema.validate(req.body);
         if (error) {
-            return next(HttpError(400, error.message));
+            throw HttpError(400, error.message);
         }
-        const { id } = res.params;
-        const result = await contactsService.updateContact(id, res.body);
+        const { contactId } = req.params;
+        const result = await contactsService.updateContact(contactId, req.body);
         if (!result) {
-            throw HttpError(404, `Contact with id=${id} not faund`)
+            throw HttpError(404, `Contact with id=${contactId} not faund`)
         };
         res.json(result);
     }

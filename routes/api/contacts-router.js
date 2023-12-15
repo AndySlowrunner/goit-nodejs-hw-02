@@ -1,7 +1,7 @@
 import express from 'express';
 
-import contactsController from '../../controller/contacts-controller';
-import { isEmptyBody } from '../../middleware/isEmptyBody.js';
+import contactsController from '../../controller/contacts-controller.js';
+import isEmptyBody from '../../middleware/isEmptyBody.js';
 
 
 const router = express.Router()

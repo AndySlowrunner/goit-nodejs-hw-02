@@ -5,11 +5,11 @@ export const contactAddSchema = Joi.object({
         "any.required": `"name" must be exist`
     }),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-    phone: Joi.number().required(),
+    phone: Joi.string().required(),
 });
 
 export const contactUpdateSchema = Joi.object({
     name: Joi.string(),
     email: Joi.string(),
-    phone: Joi.number(),
+    phone: Joi.string(),
 });
