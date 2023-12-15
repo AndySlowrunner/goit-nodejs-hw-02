@@ -2,18 +2,28 @@ import HttpError from '../helper/HttpError.js';
 import * as contactsService from '../models/contacts.js';
 import { contactAddSchema, contactUpdateSchema } from '../schemas/contact-schema.js';
 
-const getAll = async (req, res) => {
-    const result = await contactsService.listContacts();
-    res.json(result);
+const getAll = async (req, res, next) => {
+    try {
+        const result = await contactsService.listContacts();
+        res.json(result);
+    }
+    catch (error) {
+        next(error);
+    }
 };
 
-const getById = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await contactsService.getContactById(contactId);
-    if (!result) {
-        throw HttpError(404, `Contact with id=${contactId} not faund`)
-    };
-    res.json(result);
+const getById = async (req, res, next) => {
+    try {
+        const { contactId } = req.params;
+        const result = await contactsService.getContactById(contactId);
+        if (!result) {
+            throw HttpError(404)
+        };
+        res.json(result);
+    }
+    catch (error) {
+        next(error);
+    }
 };
 
 const addNew = async (req, res, next) => {
@@ -31,12 +41,17 @@ const addNew = async (req, res, next) => {
 };
 
 const deleteById = async (req, res, next) => {
-    const { contactId } = req.params;
-    const result = await contactsService.removeContact(contactId);
-    if (!result) {
-        throw HttpError(404, `Contact with id=${contactId} not faund`)
-    };
-    res.json({ message: "Delete success" });
+    try {
+        const { contactId } = req.params;
+        const result = await contactsService.removeContact(contactId);
+        if (!result) {
+            throw HttpError(404)
+        };
+        res.json({ message: "contact deleted" });
+    }
+    catch (error) {
+        next(error);
+    }
 };
 
 const updateById = async (req, res, next) => {
@@ -48,7 +63,7 @@ const updateById = async (req, res, next) => {
         const { contactId } = req.params;
         const result = await contactsService.updateContact(contactId, req.body);
         if (!result) {
-            throw HttpError(404, `Contact with id=${contactId} not faund`)
+            throw HttpError(404)
         };
         res.json(result);
     }
